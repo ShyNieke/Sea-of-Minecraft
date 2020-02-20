@@ -1,0 +1,14 @@
+modLoader="javafml"
+loaderVersion="[31,)"
+#issueTrackerURL=""
+
+[[mods]]
+modId="somc"
+version="${file.jarVersion}"
+displayName="Sea Of Minecraft"
+#displayURL=""
+authors="ShyNieke, Mrbysco"
+logoFile="logo.png"
+description='''
+A Sea of Thieves inspired Minecraft mod.
+'''
