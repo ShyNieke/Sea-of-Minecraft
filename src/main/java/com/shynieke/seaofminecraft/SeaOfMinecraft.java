@@ -32,11 +32,12 @@ public class SeaOfMinecraft
 
     public static List<ResourceLocation> skeletonBowList = new ArrayList<>();
     public static List<ResourceLocation> skeletonSwordList = new ArrayList<>();
+    public static List<ResourceLocation> lightStackList = new ArrayList<>();
 
     public SeaOfMinecraft() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SoMCConfig.serverSpec);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SoMCConfig.serverSpec);
         eventBus.register(SoMCConfig.class);
 
         eventBus.addListener(this::setup);
@@ -59,6 +60,7 @@ public class SeaOfMinecraft
         //Clear cache
         SeaOfMinecraft.skeletonBowList.clear();
         SeaOfMinecraft.skeletonSwordList.clear();
+        SeaOfMinecraft.lightStackList.clear();
 
         //Create item cache
         for (String name : SoMCConfig.SERVER.skeleton_bows.get())
@@ -83,6 +85,20 @@ public class SeaOfMinecraft
                 Item item = ForgeRegistries.ITEMS.getValue(regName);
                 if (item != null && item != Items.AIR) {
                     SeaOfMinecraft.skeletonSwordList.add(regName);
+                } else {
+                    SeaOfMinecraft.LOGGER.error("Config - Failed to locate item by the name of '" + name
+                            + "' for sword list. This may cause unexpected results in gameplay.");
+                }
+            }
+        }
+        for (String name : SoMCConfig.SERVER.lit_items.get())
+        {
+            name = name.trim();
+            if (!name.isEmpty()) {
+                ResourceLocation regName = new ResourceLocation(name);
+                Item item = ForgeRegistries.ITEMS.getValue(regName);
+                if (item != null && item != Items.AIR) {
+                    SeaOfMinecraft.lightStackList.add(regName);
                 } else {
                     SeaOfMinecraft.LOGGER.error("Config - Failed to locate item by the name of '" + name
                             + "' for sword list. This may cause unexpected results in gameplay.");

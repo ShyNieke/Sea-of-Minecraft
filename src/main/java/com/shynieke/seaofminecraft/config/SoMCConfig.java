@@ -22,6 +22,7 @@ public class SoMCConfig {
 
         public final ConfigValue<List<? extends String>> skeleton_bows;
         public final ConfigValue<List<? extends String>> skeleton_swords;
+        public final ConfigValue<List<? extends String>> lit_items;
 
         Server(ForgeConfigSpec.Builder builder) {
             builder.comment("General settings")
@@ -46,6 +47,22 @@ public class SoMCConfig {
             skeleton_swords = builder
                     .comment("Dictates which swords the Skeletons can spawn with.")
                     .defineList("skeleton_swords", Arrays.asList(swords), o -> (o instanceof String));
+
+            String[] litItems = new String[]
+                    {
+                            "minecraft:torch",
+                            "minecraft:lantern",
+                            "minecraft:sea_lantern",
+                            "minecraft:jack_o_lantern",
+                            "minecraft:campfire",
+                            "minecraft:end_rod",
+                            "minecraft:sea_pickle",
+                            "minecraft:glowstone"
+                    };
+
+            lit_items = builder
+                    .comment("Dictates which items count as having light.")
+                    .defineList("lit_items", Arrays.asList(litItems), o -> (o instanceof String));
 
             builder.pop();
         }

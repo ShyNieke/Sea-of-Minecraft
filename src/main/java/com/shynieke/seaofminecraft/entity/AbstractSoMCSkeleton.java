@@ -2,7 +2,6 @@ package com.shynieke.seaofminecraft.entity;
 
 import com.shynieke.seaofminecraft.SeaOfMinecraft;
 import com.shynieke.seaofminecraft.entity.placeable.GunpowderBarrelEntity;
-import com.shynieke.seaofminecraft.init.SoMCRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.CreatureAttribute;
@@ -36,11 +35,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
@@ -50,10 +53,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
+import java.util.Iterator;
 import java.util.List;
 
 public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRangedAttackMob {
     private int wetTicks;
+    private int litTicks;
 
     private final RangedBowAttackGoal<AbstractSoMCSkeleton> aiArrowAttack = new RangedBowAttackGoal<>(this, 1.0D, 20, 15.0F);
     private final MeleeAttackGoal aiAttackOnCollide = new MeleeAttackGoal(this, 1.2D, false) {
@@ -114,21 +119,25 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
 
     protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
         super.setEquipmentBasedOnDifficulty(difficulty);
-        switch(world.rand.nextInt(4)) {
-            default:
+        int randNumb = world.rand.nextInt(3);
+        switch(randNumb) {
+            case 0:
                 this.setItemStackToSlot(EquipmentSlotType.MAINHAND, getRandomFromList(SeaOfMinecraft.skeletonBowList));
+                break;
             case 1:
-                this.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
-            case 2:
                 this.setItemStackToSlot(EquipmentSlotType.MAINHAND, getRandomFromList(SeaOfMinecraft.skeletonSwordList));
+                break;
+            default:
+                this.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
+                break;
         }
-        if(!getEntityWorld().isRemote) {
-            GunpowderBarrelEntity entity = SoMCRegistry.GUNPOWDER_BARREL.get().create(getEntityWorld());
-            entity.setPosition(getPosX(), getPosY(), getPosZ());
-
-            getEntityWorld().addEntity(entity);
-            entity.startRiding(this);
-        }
+//        if(!getEntityWorld().isRemote) {
+//            GunpowderBarrelEntity entity = SoMCRegistry.GUNPOWDER_BARREL.get().create(getEntityWorld());
+//            entity.setPosition(getPosX(), getPosY(), getPosZ());
+//
+//            getEntityWorld().addEntity(entity);
+//            entity.startRiding(this);
+//        }
     }
 
     private ItemStack getRandomFromList(List<ResourceLocation> list) {
@@ -198,8 +207,14 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
-        if (this.isWet()) {
+        if (this.doesWetAffect() && this.isWet()) {
             compound.putInt("WetTicks", this.wetTicks);
+        }
+
+        if(this.doesLightAffect()) {
+            if(isLit()) {
+                compound.putInt("LitTicks", this.litTicks);
+            }
         }
     }
 
@@ -209,6 +224,10 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
 
         if (compound.contains("WetTicks")) {
             this.setWetTicks(compound.getInt("WetTicks"));
+        }
+
+        if (compound.contains("LitTicks")) {
+            this.setWetTicks(compound.getInt("LitTicks"));
         }
     }
 
@@ -251,7 +270,19 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
         return wetTicks;
     }
 
+    public void setLitTicks(int ticks) {
+        this.wetTicks = ticks;
+    }
+
+    public int getLitTicks() {
+        return wetTicks;
+    }
+
     public boolean doesWetAffect() {
+        return false;
+    }
+
+    public boolean doesLightAffect() {
         return false;
     }
 
@@ -267,7 +298,45 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
                 --wetTicks;
             }
         }
+        if(doesLightAffect()) {
+            if(isLit()) {
+                if(litTicks <= 0) {
+                    setLitTicks(200);
+                }
+            } else {
+                --litTicks;
+            }
+        }
         super.tick();
+    }
+
+    public boolean isLit() {
+        return world.getLight(this.getPosition()) >= 8 || isLitAround(6);
+    }
+
+    public boolean isLitAround(int range) {
+        AxisAlignedBB axisalignedbb = (new AxisAlignedBB(this.getPosX(), this.getPosY(), this.getPosZ(), this.getPosX() + 1, this.getPosY() + 1, this.getPosZ() + 1)).grow(range);
+        List<PlayerEntity> list = this.world.getEntitiesWithinAABB(PlayerEntity.class, axisalignedbb);
+
+        if(!list.isEmpty()) {
+            Iterator<PlayerEntity> i = list.iterator();
+            while (i.hasNext()) {
+                PlayerEntity player = i.next();
+                if(player.isSpectator()) {
+                    i.remove();
+                }
+
+                if(isStackLight(player.getHeldItem(Hand.MAIN_HAND)) || isStackLight(player.getHeldItem(Hand.OFF_HAND))) {
+                    return true;
+                }
+            }
+        }
+
+        return !list.isEmpty();
+    }
+
+    public boolean isStackLight(ItemStack stack) {
+        return SeaOfMinecraft.lightStackList.isEmpty() ? false : SeaOfMinecraft.lightStackList.contains(stack.getItem().getRegistryName());
     }
 
     @Override
@@ -288,5 +357,12 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
         entityToUpdate.prevRotationYaw += f1 - f;
         entityToUpdate.rotationYaw += f1 - f;
         entityToUpdate.setRotationYawHead(entityToUpdate.rotationYaw);
+    }
+
+    //TODO: DEBUG CODE - REMOVE!
+    @Nullable
+    @Override
+    public ITextComponent getCustomName() {
+        return new StringTextComponent("Health: " + this.getHealth());
     }
 }

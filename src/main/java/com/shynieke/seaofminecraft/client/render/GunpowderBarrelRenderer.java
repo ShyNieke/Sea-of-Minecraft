@@ -13,7 +13,7 @@ public class GunpowderBarrelRenderer<T extends GunpowderBarrelEntity, M extends 
     private static final ResourceLocation BARREL_TEXTURES = new ResourceLocation(Reference.MOD_ID,"textures/entity/gunpowder_barrel.png");
 
     public GunpowderBarrelRenderer(EntityRendererManager rendererManager) {
-        super(rendererManager, new GunpowderBarrelModel() , 0.5F);
+        super(rendererManager, new GunpowderBarrelModel() , 0.0F);
     }
 
     @Override

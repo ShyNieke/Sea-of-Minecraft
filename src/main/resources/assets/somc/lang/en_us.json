@@ -1,9 +1,13 @@
 {
 	"_comment": "Item names",
 	"item.somc.gold_skeleton_spawn_egg": "Gold Skeleton Spawn Egg",
+	"item.somc.plant_skeleton_spawn_egg": "Plant Skeleton Spawn Egg",
+	"item.somc.shadow_skeleton_spawn_egg": "Shadow Skeleton Spawn Egg",
 	"item.somc.gunpowder_barrel_spawn_egg": "Gunpowder Barrel Spawn Egg",
 
 	"_comment": "Entity",
 	"entity.somc.gold_skeleton": "Gold Skeleton",
+	"entity.somc.plant_skeleton": "Plant Skeleton",
+	"entity.somc.shadow_skeleton": "Shadow Skeleton",
 	"entity.somc.gunpowder_barrel": "Gunpowder Barrel"
 }
