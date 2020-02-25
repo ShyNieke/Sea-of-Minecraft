@@ -34,6 +34,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -304,7 +305,12 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
             if(isLit()) {
                 if(litTicks <= 0) {
                     setLitTicks(200);
-
+                    for(int i = 0; i < 20; ++i) {
+                        double d0 = this.rand.nextGaussian() * 0.02D;
+                        double d1 = this.rand.nextGaussian() * 0.02D;
+                        double d2 = this.rand.nextGaussian() * 0.02D;
+                        this.world.addParticle(ParticleTypes.SMOKE, this.getPosXRandom(1.0D), this.getPosYRandom(), this.getPosZRandom(1.0D), d0, d1, d2);
+                    }
                 }
             } else {
                 if(litTicks > 0)
