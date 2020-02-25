@@ -25,7 +25,8 @@ public class ShadowSkeletonEntity extends AbstractSoMCSkeleton {
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
-        return this.isInvulnerableTo(source) ? false : (getLitTicks() > 0 ? super.attackEntityFrom(source, damage) : false);
+        float damageSource = isInvulnerableTo(source) ? 0.0F : damage;
+        return this.isInvulnerableTo(source) ? false : (getLitTicks() > 0 ? super.attackEntityFrom(source, damage) : (damageSource > 0.0F ? super.attackEntityFrom(source, damageSource) : false));
     }
 
     @Override

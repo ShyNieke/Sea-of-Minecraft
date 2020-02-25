@@ -47,6 +47,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -271,11 +272,11 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
     }
 
     public void setLitTicks(int ticks) {
-        this.wetTicks = ticks;
+        this.litTicks = ticks;
     }
 
     public int getLitTicks() {
-        return wetTicks;
+        return this.litTicks;
     }
 
     public boolean doesWetAffect() {
@@ -295,23 +296,26 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
                     setWetTicks(400);
                 }
             } else {
-                --wetTicks;
+                if(wetTicks > 0)
+                    --wetTicks;
             }
         }
         if(doesLightAffect()) {
             if(isLit()) {
                 if(litTicks <= 0) {
                     setLitTicks(200);
+
                 }
             } else {
-                --litTicks;
+                if(litTicks > 0)
+                    --litTicks;
             }
         }
         super.tick();
     }
 
     public boolean isLit() {
-        return world.getLight(this.getPosition()) >= 8 || isLitAround(6);
+        return world.getLightFor(LightType.BLOCK, this.getPosition()) >= 8 || (this.isInDaylight() && !this.world.isRaining()) || isLitAround(6);
     }
 
     public boolean isLitAround(int range) {
@@ -332,7 +336,7 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
             }
         }
 
-        return !list.isEmpty();
+        return false;
     }
 
     public boolean isStackLight(ItemStack stack) {
