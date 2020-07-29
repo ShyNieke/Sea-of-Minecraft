@@ -24,6 +24,7 @@ public class SoMCRegistry {
     public static final RegistryObject<EntityType<GoldSkeletonEntity>> GOLD_SKELETON = ENTITIES.register("gold_skeleton", () -> register("gold_skeleton", EntityType.Builder.<GoldSkeletonEntity>create(GoldSkeletonEntity::new, EntityClassification.MONSTER).size(0.6F, 1.99F)));
     public static final RegistryObject<EntityType<PlantSkeletonEntity>> PLANT_SKELETON = ENTITIES.register("plant_skeleton", () -> register("plant_skeleton", EntityType.Builder.<PlantSkeletonEntity>create(PlantSkeletonEntity::new, EntityClassification.MONSTER).size(0.6F, 1.99F)));
     public static final RegistryObject<EntityType<ShadowSkeletonEntity>> SHADOW_SKELETON = ENTITIES.register("shadow_skeleton", () -> register("shadow_skeleton", EntityType.Builder.<ShadowSkeletonEntity>create(ShadowSkeletonEntity::new, EntityClassification.MONSTER).size(0.6F, 1.99F)));
+
     public static final RegistryObject<EntityType<GunpowderBarrelEntity>> GUNPOWDER_BARREL = ENTITIES.register("gunpowder_barrel", () -> register("gunpowder_barrel", EntityType.Builder.<GunpowderBarrelEntity>create(GunpowderBarrelEntity::new, EntityClassification.MISC)
             .size(0.8F, 0.8F)));
 
