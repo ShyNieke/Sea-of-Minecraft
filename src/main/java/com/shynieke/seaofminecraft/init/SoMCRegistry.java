@@ -54,5 +54,6 @@ public class SoMCRegistry {
         event.put(PLANT_SKELETON.get(), PlantSkeletonEntity.registerAttributes().create());
         event.put(SHADOW_SKELETON.get(), ShadowSkeletonEntity.registerAttributes().create());
 
+        event.put(GUNPOWDER_BARREL.get(), GunpowderBarrelEntity.registerAttributes().create());
     }
 }

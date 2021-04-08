@@ -4,7 +4,8 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -15,7 +16,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -43,7 +44,7 @@ public class GunpowderBarrelEntity extends LivingEntity {
     public GunpowderBarrelEntity(EntityType<? extends GunpowderBarrelEntity> entityType, World worldIn, double x, double y, double z) {
         this(entityType, worldIn);
         this.setPosition(x, y, z);
-        this.setMotion(Vec3d.ZERO);
+        this.setMotion(Vector3d.ZERO);
         this.prevPosX = x;
         this.prevPosY = y;
         this.prevPosZ = z;
@@ -68,10 +69,9 @@ public class GunpowderBarrelEntity extends LivingEntity {
         this.dataManager.register(IGNITED, false);
     }
 
-    @Override
-    protected void registerAttributes() {
-        super.registerAttributes();
-        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(1.0F);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return LivingEntity.registerAttributes()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 1.0F);
     }
 
     public boolean hasIgnited() {
