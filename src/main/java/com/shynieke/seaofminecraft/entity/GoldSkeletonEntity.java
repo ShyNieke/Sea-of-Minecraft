@@ -1,7 +1,8 @@
 package com.shynieke.seaofminecraft.entity;
 
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
@@ -11,10 +12,8 @@ public class GoldSkeletonEntity extends AbstractSoMCSkeleton {
         super(entityType, worldIn);
     }
 
-    @Override
-    protected void registerAttributes() {
-        super.registerAttributes();
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.1875D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return AbstractSoMCSkeleton.registerAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.1875D);
     }
 
     @Override
@@ -33,11 +32,11 @@ public class GoldSkeletonEntity extends AbstractSoMCSkeleton {
     public void tick() {
         super.tick();
 
-        if(getWetTicks() > 0 && this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() != 0.1875D * 0.5) {
-            this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.1875D * 0.5);
+        if(getWetTicks() > 0 && this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() != 0.1875D * 0.5) {
+            this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.1875D * 0.5);
         } else {
-            if(this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() != 0.1875D) {
-                this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.1875D);
+            if(this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() != 0.1875D) {
+                this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.1875D);
             }
         }
     }

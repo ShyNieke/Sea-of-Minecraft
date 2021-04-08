@@ -39,7 +39,7 @@ public class GunpowderBarrelModel<T extends Entity> extends SegmentedModel<T> {
 	}
 
 	@Override
-	public void setRotationAngles(T t, float v, float v1, float v2, float v3, float v4) {
+	public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
 	}
 }

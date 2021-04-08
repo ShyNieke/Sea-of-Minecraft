@@ -1,7 +1,8 @@
 package com.shynieke.seaofminecraft.entity;
 
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
@@ -13,11 +14,10 @@ public class PlantSkeletonEntity extends AbstractSoMCSkeleton {
         super(entityType, worldIn);
     }
 
-    @Override
-    protected void registerAttributes() {
-        super.registerAttributes();
-        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(14.0D);
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return AbstractSoMCSkeleton.registerAttributes()
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D)
+                .createMutableAttribute(Attributes.MAX_HEALTH, 14.0D);
     }
 
     @Override

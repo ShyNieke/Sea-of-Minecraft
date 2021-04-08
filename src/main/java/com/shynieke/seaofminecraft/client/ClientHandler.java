@@ -12,21 +12,19 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ClientHandler {
-    public static void doClientStuff(final FMLClientSetupEvent event) {
+    public static void onClientSetup(final FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(SoMCRegistry.GOLD_SKELETON.get(), renderManager -> new GoldSkeletonRenderer(renderManager));
         RenderingRegistry.registerEntityRenderingHandler(SoMCRegistry.PLANT_SKELETON.get(), renderManager -> new PlantSkeletonRenderer(renderManager));
         RenderingRegistry.registerEntityRenderingHandler(SoMCRegistry.SHADOW_SKELETON.get(), renderManager -> new ShadowSkeletonRenderer(renderManager));
 
         RenderingRegistry.registerEntityRenderingHandler(SoMCRegistry.GUNPOWDER_BARREL.get(), renderManager -> new GunpowderBarrelRenderer(renderManager));
-}
+    }
 
     public static void registerItemColors(final ColorHandlerEvent.Item event) {
         ItemColors colors = event.getItemColors();
 
-        for(CustomSpawnEggItem spawneggitem : CustomSpawnEggItem.getEggs()) {
-            colors.register((p_198141_1_, p_198141_2_) -> {
-                return spawneggitem.getColor(p_198141_2_);
-            }, spawneggitem);
+        for(CustomSpawnEggItem spawneggitem : CustomSpawnEggItem.getCustomEggs()) {
+            colors.register((stack, tintIndex) -> spawneggitem.getColor(tintIndex), spawneggitem);
         }
     }
 }

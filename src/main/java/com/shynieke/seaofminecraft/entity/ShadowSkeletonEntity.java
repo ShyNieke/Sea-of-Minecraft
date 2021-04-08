@@ -1,7 +1,8 @@
 package com.shynieke.seaofminecraft.entity;
 
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
@@ -11,11 +12,9 @@ public class ShadowSkeletonEntity extends AbstractSoMCSkeleton {
         super(entityType, worldIn);
     }
 
-    @Override
-    protected void registerAttributes() {
-        super.registerAttributes();
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
 //        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(14.0D);
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        return AbstractSoMCSkeleton.registerAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override

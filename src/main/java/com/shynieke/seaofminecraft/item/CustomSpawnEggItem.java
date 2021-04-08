@@ -9,9 +9,10 @@ import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.MobSpawnerTileEntity;
@@ -22,10 +23,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext.FluidMode;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.spawner.AbstractSpawner;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,14 +37,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class CustomSpawnEggItem extends Item {
+public class CustomSpawnEggItem extends SpawnEggItem {
     private static final Map<Supplier<EntityType<?>>, CustomSpawnEggItem> EGGS = Maps.newIdentityHashMap();
     private final Supplier<EntityType<?>> typeIn;
     private final int primaryColor;
     private final int secondaryColor;
 
     public CustomSpawnEggItem(Supplier<EntityType<?>> type, int primary, int secondary, Properties properties) {
-        super(properties);
+        super(null, primary, secondary, properties.group(ItemGroup.MISC));
         this.typeIn = type;
         this.primaryColor = primary;
         this.secondaryColor = secondary;
@@ -80,7 +82,7 @@ public class CustomSpawnEggItem extends Item {
             }
 
             EntityType<?> type = this.getType(stack.getTag());
-            if (type.spawn(worldIn, stack, context.getPlayer(), pos2, SpawnReason.SPAWN_EGG, true, !Objects.equals(pos, pos2) && dir == Direction.UP) != null) {
+            if (!worldIn.isRemote && type.spawn((ServerWorld)worldIn, stack, context.getPlayer(), pos2, SpawnReason.SPAWN_EGG, true, !Objects.equals(pos, pos2) && dir == Direction.UP) != null) {
                 stack.shrink(1);
             }
 
@@ -88,32 +90,32 @@ public class CustomSpawnEggItem extends Item {
         }
     }
 
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand handIn) {
-        ItemStack stack = player.getHeldItem(handIn);
-        RayTraceResult traceResult = rayTrace(worldIn, player, FluidMode.SOURCE_ONLY);
-        if (traceResult.getType() != Type.BLOCK) {
-            return ActionResult.resultPass(stack);
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        ItemStack itemstack = playerIn.getHeldItem(handIn);
+        RayTraceResult raytraceresult = rayTrace(worldIn, playerIn, RayTraceContext.FluidMode.SOURCE_ONLY);
+        if (raytraceresult.getType() != Type.BLOCK) {
+            return ActionResult.resultPass(itemstack);
         } else if (worldIn.isRemote) {
-            return ActionResult.resultSuccess(stack);
+            return ActionResult.resultSuccess(itemstack);
         } else {
-            BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult)traceResult;
-            BlockPos pos = blockRayTraceResult.getPos();
-            if (!(worldIn.getBlockState(pos).getBlock() instanceof FlowingFluidBlock)) {
-                return ActionResult.resultPass(stack);
-            } else if (worldIn.isBlockModifiable(player, pos) && player.canPlayerEdit(pos, blockRayTraceResult.getFace(), stack)) {
-                EntityType<?> type = this.getType(stack.getTag());
-                if (type.spawn(worldIn, stack, player, pos, SpawnReason.SPAWN_EGG, false, false) == null) {
-                    return ActionResult.resultPass(stack);
+            BlockRayTraceResult blockraytraceresult = (BlockRayTraceResult)raytraceresult;
+            BlockPos blockpos = blockraytraceresult.getPos();
+            if (!(worldIn.getBlockState(blockpos).getBlock() instanceof FlowingFluidBlock)) {
+                return ActionResult.resultPass(itemstack);
+            } else if (worldIn.isBlockModifiable(playerIn, blockpos) && playerIn.canPlayerEdit(blockpos, blockraytraceresult.getFace(), itemstack)) {
+                EntityType<?> entitytype = this.getType(itemstack.getTag());
+                if (entitytype.spawn((ServerWorld) worldIn, itemstack, playerIn, blockpos, SpawnReason.SPAWN_EGG, false, false) == null) {
+                    return ActionResult.resultPass(itemstack);
                 } else {
-                    if (!player.abilities.isCreativeMode) {
-                        stack.shrink(1);
+                    if (!playerIn.abilities.isCreativeMode) {
+                        itemstack.shrink(1);
                     }
 
-                    player.addStat(Stats.ITEM_USED.get(this));
-                    return ActionResult.resultSuccess(stack);
+                    playerIn.addStat(Stats.ITEM_USED.get(this));
+                    return ActionResult.resultSuccess(itemstack);
                 }
             } else {
-                return ActionResult.resultFail(stack);
+                return ActionResult.resultFail(itemstack);
             }
         }
     }
@@ -123,7 +125,7 @@ public class CustomSpawnEggItem extends Item {
         return p_195983_1_ == 0 ? this.primaryColor : this.secondaryColor;
     }
 
-    public static Iterable<CustomSpawnEggItem> getEggs() {
+    public static Iterable<CustomSpawnEggItem> getCustomEggs() {
         return Iterables.unmodifiableIterable(EGGS.values());
     }
 

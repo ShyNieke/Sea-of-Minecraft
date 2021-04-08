@@ -1,21 +1,14 @@
 package com.shynieke.seaofminecraft.config;
 
 import com.shynieke.seaofminecraft.SeaOfMinecraft;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.ColorHandlerEvent.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.LogManager;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static net.minecraftforge.fml.loading.LogMarkers.FORGEMOD;
 
 public class SoMCConfig {
     public static class Server {
@@ -78,13 +71,14 @@ public class SoMCConfig {
 
     @SubscribeEvent
     public static void onLoad(final ModConfig.Loading configEvent) {
-        LogManager.getLogger().debug(FORGEMOD, "Loaded forge config file {}", configEvent.getConfig().getFileName());
+        SeaOfMinecraft.LOGGER.debug("Loaded Sea Of Minecraft's config file {}", configEvent.getConfig().getFileName());
+        SoMCConfigCache.refreshCache();
     }
 
     @SubscribeEvent
     public static void onFileChange(final ModConfig.Reloading configEvent) {
-        LogManager.getLogger().debug(FORGEMOD, "Forge config just got changed on the file system!");
-        SeaOfMinecraft.InitializeLists();
+        SeaOfMinecraft.LOGGER.debug("Sea Of Minecraft's config just got changed on the file system!");
+        SoMCConfigCache.refreshCache();
     }
 
 }

@@ -1,6 +1,6 @@
 package com.shynieke.seaofminecraft.entity;
 
-import com.shynieke.seaofminecraft.SeaOfMinecraft;
+import com.shynieke.seaofminecraft.config.SoMCConfigCache;
 import com.shynieke.seaofminecraft.entity.placeable.GunpowderBarrelEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -13,8 +13,9 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
@@ -47,7 +48,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -97,9 +98,8 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, true));
     }
 
-    protected void registerAttributes() {
-        super.registerAttributes();
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MonsterEntity.func_234295_eP_().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
@@ -124,10 +124,10 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
         int randNumb = world.rand.nextInt(3);
         switch(randNumb) {
             case 0:
-                this.setItemStackToSlot(EquipmentSlotType.MAINHAND, getRandomFromList(SeaOfMinecraft.skeletonBowList));
+                this.setItemStackToSlot(EquipmentSlotType.MAINHAND, getRandomFromList(SoMCConfigCache.skeletonBowList));
                 break;
             case 1:
-                this.setItemStackToSlot(EquipmentSlotType.MAINHAND, getRandomFromList(SeaOfMinecraft.skeletonSwordList));
+                this.setItemStackToSlot(EquipmentSlotType.MAINHAND, getRandomFromList(SoMCConfigCache.skeletonSwordList));
                 break;
             default:
                 this.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
@@ -149,7 +149,8 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
     }
 
     @Nullable
-    public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
+    @Override
+    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
         spawnDataIn = super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
         this.setEquipmentBasedOnDifficulty(difficultyIn);
         this.setEnchantmentBasedOnDifficulty(difficultyIn);
@@ -192,7 +193,7 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
         ItemStack itemstack = this.findAmmo(this.getHeldItem(ProjectileHelper.getHandWith(this, Items.BOW)));
         AbstractArrowEntity abstractarrowentity = this.fireArrow(itemstack, distanceFactor);
         if (this.getHeldItemMainhand().getItem() instanceof net.minecraft.item.BowItem)
-            abstractarrowentity = ((net.minecraft.item.BowItem)this.getHeldItemMainhand().getItem()).customeArrow(abstractarrowentity);
+            abstractarrowentity = ((net.minecraft.item.BowItem)this.getHeldItemMainhand().getItem()).customArrow(abstractarrowentity);
         double d0 = target.getPosX() - this.getPosX();
         double d1 = target.getPosYHeight(0.3333333333333333D) - abstractarrowentity.getPosY();
         double d2 = target.getPosZ() - this.getPosZ();
@@ -346,7 +347,7 @@ public abstract class AbstractSoMCSkeleton extends MonsterEntity implements IRan
     }
 
     public boolean isStackLight(ItemStack stack) {
-        return SeaOfMinecraft.lightStackList.isEmpty() ? false : SeaOfMinecraft.lightStackList.contains(stack.getItem().getRegistryName());
+        return SoMCConfigCache.lightStackList.isEmpty() ? false : SoMCConfigCache.lightStackList.contains(stack.getItem().getRegistryName());
     }
 
     @Override
