@@ -1,26 +1,26 @@
 package com.shynieke.seaofminecraft.client.render;
 
 import com.shynieke.seaofminecraft.entity.AbstractSoMCSkeleton;
-import net.minecraft.client.renderer.entity.BipedRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;
-import net.minecraft.client.renderer.entity.layers.HeldItemLayer;
-import net.minecraft.client.renderer.entity.model.SkeletonModel;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
+import net.minecraft.client.model.SkeletonModel;
+import net.minecraft.resources.ResourceLocation;
 
-public class SoMCSkeletonRenderer<T extends AbstractSoMCSkeleton, M extends SkeletonModel<T>> extends BipedRenderer<AbstractSoMCSkeleton, SkeletonModel<AbstractSoMCSkeleton>> {
+public class SoMCSkeletonRenderer<T extends AbstractSoMCSkeleton, M extends SkeletonModel<T>> extends HumanoidMobRenderer<AbstractSoMCSkeleton, SkeletonModel<AbstractSoMCSkeleton>> {
     private static final ResourceLocation SKELETON_TEXTURES = new ResourceLocation("textures/entity/skeleton/skeleton.png");
 
-    public SoMCSkeletonRenderer(EntityRendererManager rendererManager) {
+    public SoMCSkeletonRenderer(EntityRenderDispatcher rendererManager) {
         super(rendererManager, new SkeletonModel(), 0.5F);
-        this.addLayer(new HeldItemLayer(this));
-        this.addLayer(new BipedArmorLayer(this, new SkeletonModel(0.5F, true), new SkeletonModel(1.0F, true)));
+        this.addLayer(new ItemInHandLayer(this));
+        this.addLayer(new HumanoidArmorLayer(this, new SkeletonModel(0.5F, true), new SkeletonModel(1.0F, true)));
     }
 
-    public SoMCSkeletonRenderer(EntityRendererManager rendererManager, SkeletonModel model, float shadow) {
+    public SoMCSkeletonRenderer(EntityRenderDispatcher rendererManager, SkeletonModel model, float shadow) {
         super(rendererManager, model, shadow);
-        this.addLayer(new HeldItemLayer(this));
-        this.addLayer(new BipedArmorLayer(this, new SkeletonModel(0.5F, true), new SkeletonModel(1.0F, true)));
+        this.addLayer(new ItemInHandLayer(this));
+        this.addLayer(new HumanoidArmorLayer(this, new SkeletonModel(0.5F, true), new SkeletonModel(1.0F, true)));
     }
 
     public ResourceLocation getTextureLocation(AbstractSoMCSkeleton p_110775_1_) {

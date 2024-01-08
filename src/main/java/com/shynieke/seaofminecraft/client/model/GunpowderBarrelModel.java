@@ -1,18 +1,18 @@
 package com.shynieke.seaofminecraft.client.model;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.renderer.entity.model.SegmentedModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.model.ListModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.Entity;
 
-public class GunpowderBarrelModel<T extends Entity> extends SegmentedModel<T> {
-	private final ModelRenderer Barrel;
+public class GunpowderBarrelModel<T extends Entity> extends ListModel<T> {
+	private final ModelPart Barrel;
 
 	public GunpowderBarrelModel() {
 		texWidth = 64;
 		texHeight = 64;
 
-		Barrel = new ModelRenderer(this);
+		Barrel = new ModelPart(this);
 		Barrel.setPos(0.0F, 24.0F, 0.0F);
 		Barrel.texOffs(10, 5).addBox(4.0F, -8.0F, -2.0F, 1.0F, 6.0F, 4.0F);
 		Barrel.texOffs(0, 5).addBox(-5.0F, -8.0F, -2.0F, 1.0F, 6.0F, 4.0F);
@@ -34,7 +34,7 @@ public class GunpowderBarrelModel<T extends Entity> extends SegmentedModel<T> {
 		Barrel.texOffs(0, 24).addBox(2.0F, -2.0F, 2.0F, 1.0F, 2.0F, 1.0F);
 	}
 
-	public Iterable<ModelRenderer> parts() {
+	public Iterable<ModelPart> parts() {
 		return ImmutableList.of(this.Barrel);
 	}
 

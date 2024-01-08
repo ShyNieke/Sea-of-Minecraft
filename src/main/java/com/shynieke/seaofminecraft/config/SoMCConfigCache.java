@@ -1,9 +1,9 @@
 package com.shynieke.seaofminecraft.config;
 
 import com.shynieke.seaofminecraft.SeaOfMinecraft;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;

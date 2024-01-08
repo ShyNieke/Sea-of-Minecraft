@@ -13,9 +13,10 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(Reference.MOD_ID)
+@Mod(SeaOfMinecraft.MOD_ID)
 public class SeaOfMinecraft {
-	public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
+	public static final String MOD_ID = "somc";
+	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
 
 	public SeaOfMinecraft() {
@@ -24,7 +25,7 @@ public class SeaOfMinecraft {
 		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SoMCConfig.serverSpec);
 		eventBus.register(SoMCConfig.class);
 
-		SoMCRegistry.ENTITIES.register(eventBus);
+		SoMCRegistry.ENTITY_TYPES.register(eventBus);
 		SoMCRegistry.ITEMS.register(eventBus);
 		SoMCRegistry.BLOCKS.register(eventBus);
 

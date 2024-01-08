@@ -1,19 +1,19 @@
 package com.shynieke.seaofminecraft.entity;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.level.Level;
 
 public class GoldSkeletonEntity extends AbstractSoMCSkeleton {
 
-    public GoldSkeletonEntity(EntityType<? extends AbstractSoMCSkeleton> entityType, World worldIn) {
-        super(entityType, worldIn);
+    public GoldSkeletonEntity(EntityType<? extends AbstractSoMCSkeleton> entityType, Level level) {
+        super(entityType, level);
     }
 
-    public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return AbstractSoMCSkeleton.registerAttributes().add(Attributes.MOVEMENT_SPEED, 0.1875D);
+    public static AttributeSupplier.Builder registerAttributes() {
+        return AbstractSoMCSkeleton.createAttributes().add(Attributes.MOVEMENT_SPEED, 0.1875D);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class GoldSkeletonEntity extends AbstractSoMCSkeleton {
     public boolean hurt(DamageSource source, float damage) {
         float affectedDamage = getWetTicks() > 0 ? (float)Math.floor(damage * 0.5) : (float)Math.floor(damage * 0.05);
         float damageAmount = Math.max(1.0F, affectedDamage);
-        return this.isInvulnerableTo(source) ? false : super.hurt(source, damageAmount);
+        return !this.isInvulnerableTo(source) && super.hurt(source, damageAmount);
     }
 
     @Override
