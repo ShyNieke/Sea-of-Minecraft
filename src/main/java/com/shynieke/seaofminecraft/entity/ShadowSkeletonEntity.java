@@ -14,7 +14,7 @@ public class ShadowSkeletonEntity extends AbstractSoMCSkeleton {
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
 //        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(14.0D);
-        return AbstractSoMCSkeleton.registerAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return AbstractSoMCSkeleton.registerAttributes().add(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -23,9 +23,9 @@ public class ShadowSkeletonEntity extends AbstractSoMCSkeleton {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float damage) {
+    public boolean hurt(DamageSource source, float damage) {
         float damageSource = isInvulnerableTo(source) ? 0.0F : damage;
-        return this.isInvulnerableTo(source) ? false : (getLitTicks() > 0 ? super.attackEntityFrom(source, damage) : (damageSource > 0.0F ? super.attackEntityFrom(source, damageSource) : false));
+        return this.isInvulnerableTo(source) ? false : (getLitTicks() > 0 ? super.hurt(source, damage) : (damageSource > 0.0F ? super.hurt(source, damageSource) : false));
     }
 
     @Override

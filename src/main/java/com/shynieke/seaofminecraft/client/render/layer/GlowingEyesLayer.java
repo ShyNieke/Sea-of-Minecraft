@@ -12,10 +12,10 @@ public class GlowingEyesLayer<T extends AbstractSoMCSkeleton> extends AbstractEy
 
     public GlowingEyesLayer(IEntityRenderer<T, TransparentSkeletonModel<T>> rendererIn, ResourceLocation eyeLocation) {
         super(rendererIn);
-        this.RENDER_TYPE = RenderType.getEntityAlpha(eyeLocation, 0.5F);
+        this.RENDER_TYPE = RenderType.dragonExplosionAlpha(eyeLocation, 0.5F);
     }
 
-    public RenderType getRenderType() {
+    public RenderType renderType() {
         return RENDER_TYPE;
     }
 }

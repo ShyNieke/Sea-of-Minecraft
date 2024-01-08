@@ -2,7 +2,7 @@ package com.shynieke.seaofminecraft;
 
 import com.shynieke.seaofminecraft.client.ClientHandler;
 import com.shynieke.seaofminecraft.config.SoMCConfig;
-import com.shynieke.seaofminecraft.init.SoMCRegistry;
+import com.shynieke.seaofminecraft.registry.SoMCRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -15,24 +15,23 @@ import org.apache.logging.log4j.Logger;
 
 @Mod(Reference.MOD_ID)
 public class SeaOfMinecraft {
-    public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
+	public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 
 
-    public SeaOfMinecraft() {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+	public SeaOfMinecraft() {
+		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SoMCConfig.serverSpec);
-        eventBus.register(SoMCConfig.class);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SoMCConfig.serverSpec);
+		eventBus.register(SoMCConfig.class);
 
-        SoMCRegistry.ENTITIES.register(eventBus);
-        SoMCRegistry.ITEMS.register(eventBus);
-        SoMCRegistry.BLOCKS.register(eventBus);
+		SoMCRegistry.ENTITIES.register(eventBus);
+		SoMCRegistry.ITEMS.register(eventBus);
+		SoMCRegistry.BLOCKS.register(eventBus);
 
-        eventBus.addListener(SoMCRegistry::registerEntityAttributes);
+		eventBus.addListener(SoMCRegistry::registerEntityAttributes);
 
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            eventBus.addListener(ClientHandler::onClientSetup);
-            eventBus.addListener(ClientHandler::registerItemColors);
-        });
-    }
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+			eventBus.addListener(ClientHandler::onClientSetup);
+		});
+	}
 }

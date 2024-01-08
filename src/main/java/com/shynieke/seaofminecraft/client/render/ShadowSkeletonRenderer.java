@@ -24,7 +24,7 @@ public class ShadowSkeletonRenderer<T extends ShadowSkeletonEntity, M extends Tr
     }
 
     @Override
-    public ResourceLocation getEntityTexture(ShadowSkeletonEntity entity) {
+    public ResourceLocation getTextureLocation(ShadowSkeletonEntity entity) {
         return SKELETON_TEXTURES;
     }
 }

@@ -26,8 +26,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class GunpowderBarrelEntity extends LivingEntity {
-    private static final DataParameter<Integer> STATE = EntityDataManager.createKey(GunpowderBarrelEntity.class, DataSerializers.VARINT);
-    private static final DataParameter<Boolean> IGNITED = EntityDataManager.createKey(GunpowderBarrelEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> STATE = EntityDataManager.defineId(GunpowderBarrelEntity.class, DataSerializers.INT);
+    private static final DataParameter<Boolean> IGNITED = EntityDataManager.defineId(GunpowderBarrelEntity.class, DataSerializers.BOOLEAN);
 
     @Nullable
     private LivingEntity placedBy;
@@ -38,48 +38,48 @@ public class GunpowderBarrelEntity extends LivingEntity {
 
     public GunpowderBarrelEntity(EntityType<? extends GunpowderBarrelEntity> entityType, World worldIn) {
         super(entityType, worldIn);
-        this.preventEntitySpawning = true;
+        this.blocksBuilding = true;
     }
 
     public GunpowderBarrelEntity(EntityType<? extends GunpowderBarrelEntity> entityType, World worldIn, double x, double y, double z) {
         this(entityType, worldIn);
-        this.setPosition(x, y, z);
-        this.setMotion(Vector3d.ZERO);
-        this.prevPosX = x;
-        this.prevPosY = y;
-        this.prevPosZ = z;
+        this.setPos(x, y, z);
+        this.setDeltaMovement(Vector3d.ZERO);
+        this.xo = x;
+        this.yo = y;
+        this.zo = z;
     }
 
-    protected boolean canTriggerWalking() {
+    protected boolean isMovementNoisy() {
         return false;
     }
 
     @Override
-    public boolean canBePushed() {
+    public boolean isPushable() {
         return false;
     }
 
-    public boolean canBeCollidedWith() {
+    public boolean isPickable() {
         return !this.removed;
     }
 
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(STATE, -1);
-        this.dataManager.register(IGNITED, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(STATE, -1);
+        this.entityData.define(IGNITED, false);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return LivingEntity.registerAttributes()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 1.0F);
+        return LivingEntity.createLivingAttributes()
+                .add(Attributes.MAX_HEALTH, 1.0F);
     }
 
     public boolean hasIgnited() {
-        return this.dataManager.get(IGNITED);
+        return this.entityData.get(IGNITED);
     }
 
     public void ignite() {
-        this.dataManager.set(IGNITED, true);
+        this.entityData.set(IGNITED, true);
     }
 
     public void tick() {
@@ -91,7 +91,7 @@ public class GunpowderBarrelEntity extends LivingEntity {
 
             int i = this.getBarrelState();
             if (i > 0 && this.timeSinceIgnited == 0) {
-                this.playSound(SoundEvents.ENTITY_TNT_PRIMED, 1.0F, 0.5F);
+                this.playSound(SoundEvents.TNT_PRIMED, 1.0F, 0.5F);
             }
 
             this.timeSinceIgnited += i;
@@ -101,7 +101,7 @@ public class GunpowderBarrelEntity extends LivingEntity {
 
             if (this.timeSinceIgnited >= this.fuseTime) {
                 this.timeSinceIgnited = this.fuseTime;
-                if(!this.world.isRemote) {
+                if(!this.level.isClientSide) {
                     this.explode();
                 }
             }
@@ -116,9 +116,9 @@ public class GunpowderBarrelEntity extends LivingEntity {
     }
 
     protected void explode() {
-        Explosion.Mode explosion$mode = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.world, this) ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
+        Explosion.Mode explosion$mode = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this) ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
         this.dead = true;
-        this.world.createExplosion(this, this.getPosX(), this.getPosYHeight(0.0625D), this.getPosZ(), explosionRadius, explosion$mode);
+        this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), explosionRadius, explosion$mode);
         this.remove();
     }
 
@@ -126,37 +126,37 @@ public class GunpowderBarrelEntity extends LivingEntity {
      * Returns the current state of the barrel, -1 is idle, 1 is 'in fuse'
      */
     public int getBarrelState() {
-        return this.dataManager.get(STATE);
+        return this.entityData.get(STATE);
     }
 
     /**
      * Sets the state of the barrel, -1 to idle and 1 to be 'in fuse'
      */
     public void setBarrelState(int state) {
-        this.dataManager.set(STATE, state);
+        this.entityData.set(STATE, state);
     }
 
     @Override
-    public void onDeath(DamageSource source) {
-        if(!world.isRemote) {
+    public void die(DamageSource source) {
+        if(!level.isClientSide) {
             if(source != DamageSource.OUT_OF_WORLD && !source.isCreativePlayer()) {
                 this.explode();
             }
         }
-        super.onDeath(source);
+        super.die(source);
     }
 
     @Override
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundNBT compound) {
+        super.addAdditionalSaveData(compound);
         compound.putShort("Fuse", (short)this.fuseTime);
         compound.putByte("ExplosionRadius", (byte)this.explosionRadius);
         compound.putBoolean("ignited", this.hasIgnited());
     }
 
     @Override
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundNBT compound) {
+        super.readAdditionalSaveData(compound);
         if (compound.contains("Fuse", 99)) {
             this.fuseTime = compound.getShort("Fuse");
         }
@@ -176,23 +176,23 @@ public class GunpowderBarrelEntity extends LivingEntity {
     }
 
     @Override
-    public Iterable<ItemStack> getArmorInventoryList() {
+    public Iterable<ItemStack> getArmorSlots() {
         List<ItemStack> items = Lists.newArrayList();
         return items;
     }
 
     @Override
-    public ItemStack getItemStackFromSlot(EquipmentSlotType slotIn) {
+    public ItemStack getItemBySlot(EquipmentSlotType slotIn) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public void setItemStackToSlot(EquipmentSlotType slotIn, ItemStack stack) {
+    public void setItemSlot(EquipmentSlotType slotIn, ItemStack stack) {
 
     }
 
     @Override
-    public HandSide getPrimaryHand() {
+    public HandSide getMainArm() {
         return null;
     }
 
@@ -201,21 +201,21 @@ public class GunpowderBarrelEntity extends LivingEntity {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float damage) {
+    public boolean hurt(DamageSource source, float damage) {
         if (this.isInvulnerableTo(source)) {
             return false;
-        } else if(source.isFireDamage()) {
+        } else if(source.isFire()) {
             if(!this.hasIgnited()) {
                 this.ignite();
             }
             return false;
         } else {
-            return super.attackEntityFrom(source, damage);
+            return super.hurt(source, damage);
         }
     }
 
     @Override
-    public double getYOffset() {
+    public double getMyRidingOffset() {
         return -1.0D;
     }
 }

@@ -16,7 +16,7 @@ public class GoldSkeletonRenderer<T extends GoldSkeletonEntity, M extends Skelet
     }
 
     @Override
-    public ResourceLocation getEntityTexture(AbstractSoMCSkeleton entity) {
+    public ResourceLocation getTextureLocation(AbstractSoMCSkeleton entity) {
         if(entity.getWetTicks() > 0) {
             return RUSTED_SKELETON_TEXTURES;
         } else {

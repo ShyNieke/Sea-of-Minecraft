@@ -16,8 +16,8 @@ public class PlantSkeletonEntity extends AbstractSoMCSkeleton {
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
         return AbstractSoMCSkeleton.registerAttributes()
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D)
-                .createMutableAttribute(Attributes.MAX_HEALTH, 14.0D);
+                .add(Attributes.MOVEMENT_SPEED, 0.25D)
+                .add(Attributes.MAX_HEALTH, 14.0D);
     }
 
     @Override
@@ -26,19 +26,19 @@ public class PlantSkeletonEntity extends AbstractSoMCSkeleton {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float damage) {
+    public boolean hurt(DamageSource source, float damage) {
         float reducedDamage = source.isProjectile() ? (float)Math.floor(damage * 0.8) : damage;
         float affectedDamage = getWetTicks() > 0 ? (float)Math.floor(reducedDamage / 2) : reducedDamage;
         float damageAmount = Math.max(1.0F, affectedDamage);
-        return this.isInvulnerableTo(source) ? false : super.attackEntityFrom(source, damageAmount);
+        return this.isInvulnerableTo(source) ? false : super.hurt(source, damageAmount);
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        if(getWetTicks() > 0 && !this.isPotionActive(Effects.REGENERATION)) {
-            this.addPotionEffect(new EffectInstance(Effects.REGENERATION, 80, 1));
+        if(getWetTicks() > 0 && !this.hasEffect(Effects.REGENERATION)) {
+            this.addEffect(new EffectInstance(Effects.REGENERATION, 80, 1));
         }
     }
 }

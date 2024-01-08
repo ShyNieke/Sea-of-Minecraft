@@ -2,7 +2,6 @@ package com.shynieke.seaofminecraft.client.render;
 
 import com.shynieke.seaofminecraft.Reference;
 import com.shynieke.seaofminecraft.entity.AbstractSoMCSkeleton;
-import com.shynieke.seaofminecraft.entity.GoldSkeletonEntity;
 import com.shynieke.seaofminecraft.entity.PlantSkeletonEntity;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.model.SkeletonModel;
@@ -17,7 +16,7 @@ public class PlantSkeletonRenderer<T extends PlantSkeletonEntity, M extends Skel
     }
 
     @Override
-    public ResourceLocation getEntityTexture(AbstractSoMCSkeleton entity) {
+    public ResourceLocation getTextureLocation(AbstractSoMCSkeleton entity) {
         if(entity.getWetTicks() > 0) {
             return HEALING_SKELETON_TEXTURES;
         } else {

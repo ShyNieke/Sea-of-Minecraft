@@ -13,7 +13,7 @@ public class GoldSkeletonEntity extends AbstractSoMCSkeleton {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return AbstractSoMCSkeleton.registerAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.1875D);
+        return AbstractSoMCSkeleton.registerAttributes().add(Attributes.MOVEMENT_SPEED, 0.1875D);
     }
 
     @Override
@@ -22,10 +22,10 @@ public class GoldSkeletonEntity extends AbstractSoMCSkeleton {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float damage) {
+    public boolean hurt(DamageSource source, float damage) {
         float affectedDamage = getWetTicks() > 0 ? (float)Math.floor(damage * 0.5) : (float)Math.floor(damage * 0.05);
         float damageAmount = Math.max(1.0F, affectedDamage);
-        return this.isInvulnerableTo(source) ? false : super.attackEntityFrom(source, damageAmount);
+        return this.isInvulnerableTo(source) ? false : super.hurt(source, damageAmount);
     }
 
     @Override

@@ -23,7 +23,7 @@ public class SoMCSkeletonRenderer<T extends AbstractSoMCSkeleton, M extends Skel
         this.addLayer(new BipedArmorLayer(this, new SkeletonModel(0.5F, true), new SkeletonModel(1.0F, true)));
     }
 
-    public ResourceLocation getEntityTexture(AbstractSoMCSkeleton p_110775_1_) {
+    public ResourceLocation getTextureLocation(AbstractSoMCSkeleton p_110775_1_) {
         return SKELETON_TEXTURES;
     }
 }

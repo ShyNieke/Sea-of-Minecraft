@@ -17,13 +17,13 @@ public class GunpowderBarrelRenderer<T extends GunpowderBarrelEntity, M extends 
     }
 
     @Override
-    protected float getOverlayProgress(GunpowderBarrelEntity entity, float partialTicks) {
+    protected float getWhiteOverlayProgress(GunpowderBarrelEntity entity, float partialTicks) {
         float flashIntensity = entity.getFlashItensity(partialTicks);
         return (int)(flashIntensity * 10.0F) % 2 == 0 ? 0.0F : MathHelper.clamp(flashIntensity, 0.5F, 1.0F);
     }
 
     @Override
-    protected void preRenderCallback(GunpowderBarrelEntity entity, MatrixStack matrixStack, float partialTicks) {
+    protected void scale(GunpowderBarrelEntity entity, MatrixStack matrixStack, float partialTicks) {
         matrixStack.scale(1.6F,1.6F,1.6F);
         float flashIntensity = entity.getFlashItensity(partialTicks);
         float lvt_5_1_ = 1.0F + MathHelper.sin(flashIntensity * 100.0F) * flashIntensity * 0.01F;
@@ -37,12 +37,12 @@ public class GunpowderBarrelRenderer<T extends GunpowderBarrelEntity, M extends 
     }
 
     @Override
-    protected boolean canRenderName(GunpowderBarrelEntity entity) {
+    protected boolean shouldShowName(GunpowderBarrelEntity entity) {
         return entity.hasCustomName();
     }
 
     @Override
-    public ResourceLocation getEntityTexture(GunpowderBarrelEntity entity) {
+    public ResourceLocation getTextureLocation(GunpowderBarrelEntity entity) {
         return BARREL_TEXTURES;
     }
 

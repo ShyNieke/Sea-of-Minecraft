@@ -22,11 +22,11 @@ public class TransparencyLayer<T extends AbstractSoMCSkeleton> extends LayerRend
 
     public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T skeletonIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (skeletonIn.getLitTicks() > 0 && !skeletonIn.isInvisible()) {
-            this.getEntityModel().copyModelAttributesTo(this.skeletonModel);
-            this.skeletonModel.setLivingAnimations(skeletonIn, limbSwing, limbSwingAmount, partialTicks);
-            this.skeletonModel.setRotationAngles(skeletonIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-            IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityTranslucent(this.getEntityTexture(skeletonIn)));
-            this.skeletonModel.render(matrixStackIn, ivertexbuilder, packedLightIn, LivingRenderer.getPackedOverlay(skeletonIn, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
+            this.getParentModel().copyPropertiesTo(this.skeletonModel);
+            this.skeletonModel.prepareMobModel(skeletonIn, limbSwing, limbSwingAmount, partialTicks);
+            this.skeletonModel.setupAnim(skeletonIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+            IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(this.getTextureLocation(skeletonIn)));
+            this.skeletonModel.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, LivingRenderer.getOverlayCoords(skeletonIn, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 }
