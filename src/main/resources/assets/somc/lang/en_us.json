@@ -9,5 +9,6 @@
 	"entity.somc.gold_skeleton": "Gold Skeleton",
 	"entity.somc.plant_skeleton": "Plant Skeleton",
 	"entity.somc.shadow_skeleton": "Shadow Skeleton",
-	"entity.somc.gunpowder_barrel": "Gunpowder Barrel"
+	"entity.somc.gunpowder_barrel": "Gunpowder Barrel",
+	"itemGroup.somc": "Sea of Minecraft"
 }

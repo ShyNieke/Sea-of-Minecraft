@@ -1,7 +1,8 @@
 {
+	"credit": "Made by Mrbysco with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "somc:entity/gunpowder_barrel"
+		"0": "somc:item/gunpowder_barrel"
 	},
 	"elements": [
 		{
@@ -292,25 +293,30 @@
 		{
 			"name": "Barrel",
 			"origin": [0, 0, 0],
+			"color": 0,
 			"children": [
 				{
 					"name": "LeftSide",
 					"origin": [0, 0, 0],
+					"color": 0,
 					"children": [0, 1, 2]
 				},
 				{
 					"name": "RightSide",
 					"origin": [0, 0, 0],
+					"color": 0,
 					"children": [3, 4, 5]
 				},
 				{
 					"name": "Side",
 					"origin": [0, 0, 0],
+					"color": 0,
 					"children": [6, 7, 8, 9, 10, 11, 12, 13]
 				},
 				{
 					"name": "Stand",
 					"origin": [0, 0, 0],
+					"color": 0,
 					"children": [14, 15, 16, 17]
 				}
 			]

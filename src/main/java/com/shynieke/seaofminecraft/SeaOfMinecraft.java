@@ -28,11 +28,14 @@ public class SeaOfMinecraft {
 		SoMCRegistry.ENTITY_TYPES.register(eventBus);
 		SoMCRegistry.ITEMS.register(eventBus);
 		SoMCRegistry.BLOCKS.register(eventBus);
+		SoMCRegistry.CREATIVE_MODE_TABS.register(eventBus);
 
 		eventBus.addListener(SoMCRegistry::registerEntityAttributes);
 
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			eventBus.addListener(ClientHandler::onClientSetup);
+			eventBus.addListener(ClientHandler::registerEntityRenders);
+			eventBus.addListener(ClientHandler::registerLayerDefinitions);
 		});
 	}
 }
